@@ -2,8 +2,8 @@
 % AUTHOR .... Steven E. Thornton (Copyright (c) 2016)                     %
 % EMAIL ..... sthornt7@uwo.ca                                             %
 % UPDATED ... Sept. 7/2016                                                %
-%																		  %
-% INPUT																	  %
+%                                                                         %
+% INPUT                                                                   %
 %   f .............. Either a function handle or a symbolic expression.   %
 %                        Function handle: Must take a row vector as input %
 %                                         and returns a matrix with 3     %
@@ -14,14 +14,14 @@
 %                                         represents the value of the     %
 %                                         function evaluated at the input %
 %                                         points, the second row is the   %
-%										  first derivative of the 		  %
-%										  function evaluated at the input %
-%										  points, and the third row is 	  %
-%										  the second derivative of the    %
-%									      function evaluated at the input %
-%										  points.					      %
-%                        Symbolic expression: A symbolic expression in 	  %
-%                                             one variable.				  %
+%                                         first derivative of the         %
+%                                         function evaluated at the input %
+%                                         points, and the third row is    %
+%                                         the second derivative of the    %
+%                                         function evaluated at the input %
+%                                         points.                         %
+%                        Symbolic expression: A symbolic expression in    %
+%                                             one variable.               %
 %   workingDirIn ... The directory to save output images.                 %
 %   options ........ A struct containing the options                      %
 %                                                                         %
@@ -49,7 +49,7 @@
 %   r ........... Default: 1                                              %
 %                 A parameter used in the iterations:                     %
 %                   x_n+1 = x_n - r*2*f(x_n)*f'(x_n)/(2*f'(x_n)^2 -       %
-%						    f(x_n)f''(x_n))								  %
+%                            f(x_n)f''(x_n))                              %
 %   cmap ........ Default: Matlab's hsv colormap                          %
 %                                                                         %
 % LICENSE                                                                 %
@@ -67,39 +67,38 @@
 %   along with this program.  If not, see http://www.gnu.org/licenses/.   %
 % ----------------------------------------------------------------------- %
 function halleyFractal(f, workingDirIn, options)
-	
-	% Check the number of arguments
-	narginchk(2, 3)
-	
-	if nargin < 3
-		options = struct();
-	end
-	
-	% Check/convert the input function
-	if isa(f, 'function_handle')
-
-		g = f;
-
-	elseif isa(f, 'sym')
-
-		% Convert symbolic expression to function handle with derivative
-		h   = matlabFunction(f);
-		dh  = matlabFunction(diff(f));
-		ddh = matlabFunction(diff(f,2));
-
-		g = @(x) [  h(x);
-				   dh(x);
-				  ddh(x)];
-
-	else
-		error('Input function must be a function handle or symbolic expression');
-	end
-
-	% Function handle for Halley's method
-	method = @(f, x, r) halleysMethod(f, x, r);
-
-	% Make the fractal
-	makeFractal(g, method, workingDirIn, options);
-
+    
+    % Check the number of arguments
+    narginchk(2, 3)
+    
+    if nargin < 3
+        options = struct();
+    end
+    
+    % Check/convert the input function
+    if isa(f, 'function_handle')
+        
+        g = f;
+        
+    elseif isa(f, 'sym')
+        
+        % Convert symbolic expression to function handle with derivative
+        h   = matlabFunction(f);
+        dh  = matlabFunction(diff(f));
+        ddh = matlabFunction(diff(f,2));
+        
+        g = @(x) [  h(x);
+                   dh(x);
+                  ddh(x)];
+        
+    else
+        error('Input function must be a function handle or symbolic expression');
+    end
+    
+    % Function handle for Halley's method
+    method = @(f, x, r) halleysMethod(f, x, r);
+    
+    % Make the fractal
+    makeFractal(g, method, workingDirIn, options);
 
 end
